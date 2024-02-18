@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daf Renderer Example 2</title>
+</head>
+<body>
+    <div id="daf"></div>
+
+    <input type="hidden" id="file1" value="center.txt">
+    <input type="hidden" id="file2" value="left.txt">
+    <input type="hidden" id="file3" value="right.txt">
+
+    <script src="./daf-renderer.umd.js"></script>
+    <script>
+        async function getTextFiles() {
+            try {
+                const file1Input = document.querySelector('#file1');
+                const file2Input = document.querySelector('#file2');
+                const file3Input = document.querySelector('#file3');
+
+                const file1 = file1Input.value;
+                const file2 = file2Input.value;
+                const file3 = file3Input.value;
+
+                const file1Response = await fetch(file1);
+                const file2Response = await fetch(file2);
+                const file3Response = await fetch(file3);
+
+                const maintext = await file1Response.text();
+                const innertext = await file2Response.text();
+                const outertext = await file3Response.text();
+
+                const renderer = dafRenderer("#daf",
+                    {
+                        padding: { vertical: "10px" },
+                        fontFamily: { inner: "Arial", outer: "Arial", main: "Arial" }
+                    });
+
+                renderer.render(maintext, innertext, outertext, "b");
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        getTextFiles();
+    </script>
+</body>
+</html>
